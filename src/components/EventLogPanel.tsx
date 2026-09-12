@@ -28,6 +28,13 @@ export function EventLogPanel({
   useEffect(() => {
     const root = viewRef.current;
     if (!root) return;
+    if (!started) {
+      root.querySelectorAll(".log-evt.is-active").forEach((el) => {
+        el.classList.remove("is-active");
+      });
+      root.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     root.querySelectorAll(".log-evt.is-active").forEach((el) => {
       el.classList.remove("is-active");
     });
