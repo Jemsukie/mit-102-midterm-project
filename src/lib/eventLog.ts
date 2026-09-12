@@ -97,9 +97,11 @@ function tipProcStack(p: LogSnapProc | string | null | undefined, opts?: TipOpts
   if (opts?.cpuMath) {
     const t = opts.time ?? 0;
     const rem = p.rem != null ? p.rem : p.burst;
-    const f = p.finish != null ? p.finish : t + rem;
+    // S = CPU start (fixed). T moves; F = S + B for a non-preemptive run.
+    const s = p.start != null ? p.start : t;
+    const f = p.finish != null ? p.finish : s + p.burst;
     return `<div class="log-tip-card ${cls}">
-      <div class="log-tip-card-eq">B${p.burst} − A${p.arr} = F${f}</div>
+      <div class="log-tip-card-eq">S${s} + B${p.burst} = F${f}</div>
       <div class="log-tip-card-id">${escapeHtml(p.id)}</div>
       <div class="log-tip-card-eq">F${f} − T${t} = C${rem}</div>
     </div>`;
@@ -131,6 +133,7 @@ export function renderStateTipHtml(snap: LogSnap | null | undefined): string {
       <span><strong>B</strong> Burst</span>
       <span><strong>C</strong> CPU left</span>
       <span><strong>F</strong> Finish</span>
+      <span><strong>S</strong> CPU start</span>
       <span><strong>T</strong> Current</span>
     </div>
     <div class="log-tip-boxes">
