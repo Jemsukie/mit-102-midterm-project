@@ -3,10 +3,14 @@ import { MAX_ROWS } from "../lib/constants.ts";
 import { buildRoundRobinLog } from "../lib/eventLog.ts";
 import {
   cascadeUniqueArrival,
+  cascadeUniquePriority,
   cloneProcList,
   createDefaultProcesses,
+  nextFreePriority,
   nextLetterId,
   sanitizeArrival,
+  sanitizeBurst,
+  sanitizePriority,
 } from "../lib/procs.ts";
 import {
   admitArrivals,
@@ -268,11 +272,15 @@ export function useRoundRobinSim() {
   const addProcess = useCallback(() => {
     const prev = stateRef.current.processes;
     if (prev.length >= MAX_ROWS) return;
-    const lastArr = prev.at(-1)?.arr ?? 0;
-    const n = prev.length + 1;
+    const lastArr = prev.at(-1)?.arr ?? -1;
     replaceProcesses([
       ...prev,
-      { id: nextLetterId(prev), arr: lastArr + 1, burst: 1, pri: n },
+      {
+        id: nextLetterId(prev),
+        arr: lastArr + 1,
+        burst: 1,
+        pri: nextFreePriority(prev),
+      },
     ]);
   }, [replaceProcesses]);
 
@@ -281,6 +289,14 @@ export function useRoundRobinSim() {
     if (prev.length <= 1) return;
     replaceProcesses(prev.slice(0, -1));
   }, [replaceProcesses]);
+
+  const importProcesses = useCallback(
+    (next: Process[]) => {
+      replaceProcesses(next);
+      flashLog(`Loaded ${next.length} process${next.length === 1 ? "" : "es"} from file.`);
+    },
+    [replaceProcesses, flashLog],
+  );
 
   const commitField = useCallback(
     (index: number, field: ProcField, raw: string) => {
@@ -291,9 +307,12 @@ export function useRoundRobinSim() {
         const withVal = prev.map((p, i) => (i === index ? { ...p, arr: cleaned } : p));
         next = cascadeUniqueArrival(withVal, index);
       } else if (field === "burst") {
-        let n = parseInt(raw, 10);
-        if (Number.isNaN(n) || n < 1) n = 1;
+        const n = sanitizeBurst(raw);
         next = prev.map((p, i) => (i === index ? { ...p, burst: n } : p));
+      } else if (field === "pri") {
+        const cleaned = sanitizePriority(raw);
+        const withVal = prev.map((p, i) => (i === index ? { ...p, pri: cleaned } : p));
+        next = cascadeUniquePriority(withVal, index);
       } else {
         return;
       }
@@ -397,6 +416,7 @@ export function useRoundRobinSim() {
     },
     addProcess,
     removeProcess,
+    importProcesses,
     commitField,
     commitQuantum,
     flipToLogs,

@@ -18,7 +18,7 @@ export const DEFAULT_PROCS: Process[] = [
 
 export const LETTERS = "ABCDEFGHIJ".split("");
 
-export const MAX_ROWS = 10;
+export const MAX_ROWS = 40;
 
 export const ALGO_LABELS: Record<NonPreemptiveAlgo, string> = {
   FCFS: "FCFS",

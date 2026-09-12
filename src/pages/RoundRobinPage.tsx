@@ -54,6 +54,7 @@ export default function RoundRobinPage() {
             onAdd={sim.addProcess}
             onRemove={sim.removeProcess}
             onCommitField={sim.commitField}
+            onImportProcesses={sim.importProcesses}
           />
           <FlipCard
             flipped={sim.showLogs}

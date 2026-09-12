@@ -55,6 +55,7 @@ export default function NonPreemptivePage() {
             onAdd={sim.addProcess}
             onRemove={sim.removeProcess}
             onCommitField={sim.commitField}
+            onImportProcesses={sim.importProcesses}
           />
           <FlipCard
             flipped={sim.showLogs}

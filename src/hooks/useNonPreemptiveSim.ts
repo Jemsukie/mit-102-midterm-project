@@ -3,9 +3,13 @@ import { MAX_ROWS } from "../lib/constants.ts";
 import { buildNonPreemptiveLog } from "../lib/eventLog.ts";
 import {
   cascadeUniqueArrival,
+  cascadeUniquePriority,
   createDefaultProcesses,
+  nextFreePriority,
   nextLetterId,
   sanitizeArrival,
+  sanitizeBurst,
+  sanitizePriority,
 } from "../lib/procs.ts";
 import {
   fullRunOrder,
@@ -293,10 +297,17 @@ export function useNonPreemptiveSim() {
   const addProcess = useCallback(() => {
     const prev = stateRef.current.processes;
     if (prev.length >= MAX_ROWS) return;
-    const lastArr = prev.at(-1)?.arr ?? 0;
-    const n = prev.length + 1;
+    const lastArr = prev.at(-1)?.arr ?? -1;
     replaceProcesses(
-      [...prev, { id: nextLetterId(prev), arr: lastArr + 1, burst: 1, pri: n }],
+      [
+        ...prev,
+        {
+          id: nextLetterId(prev),
+          arr: lastArr + 1,
+          burst: 1,
+          pri: nextFreePriority(prev),
+        },
+      ],
       { resetLog: false },
     );
   }, [replaceProcesses]);
@@ -307,6 +318,14 @@ export function useNonPreemptiveSim() {
     replaceProcesses(prev.slice(0, -1), { resetLog: false });
   }, [replaceProcesses]);
 
+  const importProcesses = useCallback(
+    (next: Process[]) => {
+      replaceProcesses(next, { resetLog: true });
+      flashLog(`Loaded ${next.length} process${next.length === 1 ? "" : "es"} from file.`);
+    },
+    [replaceProcesses, flashLog],
+  );
+
   const commitField = useCallback(
     (index: number, field: ProcField, raw: string) => {
       const prev = stateRef.current.processes;
@@ -316,13 +335,12 @@ export function useNonPreemptiveSim() {
         const withVal = prev.map((p, i) => (i === index ? { ...p, arr: cleaned } : p));
         next = cascadeUniqueArrival(withVal, index);
       } else if (field === "burst") {
-        let n = parseInt(raw, 10);
-        if (Number.isNaN(n) || n < 1) n = 1;
+        const n = sanitizeBurst(raw);
         next = prev.map((p, i) => (i === index ? { ...p, burst: n } : p));
       } else if (field === "pri") {
-        let n = parseInt(raw, 10);
-        if (Number.isNaN(n)) n = 99;
-        next = prev.map((p, i) => (i === index ? { ...p, pri: n } : p));
+        const cleaned = sanitizePriority(raw);
+        const withVal = prev.map((p, i) => (i === index ? { ...p, pri: cleaned } : p));
+        next = cascadeUniquePriority(withVal, index);
       } else {
         return;
       }
@@ -411,6 +429,7 @@ export function useNonPreemptiveSim() {
     changeAlgo,
     addProcess,
     removeProcess,
+    importProcesses,
     commitField,
     flipToLogs,
     flipToSim,

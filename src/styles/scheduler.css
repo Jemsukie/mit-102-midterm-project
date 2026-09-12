@@ -183,6 +183,48 @@
     .sim-toolbar button.sim-btn-remove:disabled {
       opacity: 0.45; cursor: not-allowed;
     }
+    .sim-toolbar button.sim-btn-upload {
+      font-size: 0.72rem;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      background: #243044;
+      border: 1px solid var(--cyan);
+    }
+    .sim-toolbar button.sim-btn-upload:hover {
+      background: rgba(62, 200, 200, 0.18);
+    }
+    .sim-import-error {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin: 0.15rem 0 0.35rem;
+      padding: 0.35rem 0.45rem;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: #ffd6d6;
+      background: rgba(220, 80, 80, 0.16);
+      border: 1px solid rgba(220, 80, 80, 0.45);
+      border-radius: 6px;
+    }
+    .sim-import-error span { flex: 1; min-width: 0; }
+    .sim-import-error-dismiss {
+      flex-shrink: 0;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1;
+      color: #ffd6d6;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0 0.15rem;
+    }
+    .sim-upload-hint {
+      margin: 0.3rem 0 0;
+      font-size: 0.65rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
     .sim-toolbar label { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.25rem; }
     .sim-toolbar input[type="number"],
     .sim-quantum-in {

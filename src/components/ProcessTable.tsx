@@ -1,4 +1,5 @@
-import type { MouseEvent, ReactNode } from "react";
+import { useRef, useState } from "react";
+import type { ChangeEvent, MouseEvent, ReactNode } from "react";
 import { SIM_ICON } from "../lib/constants.ts";
 import type { Process, ProcField } from "../lib/types.ts";
 
@@ -11,6 +12,7 @@ interface ProcessTableProps {
   onAdd: () => void;
   onRemove: () => void;
   onCommitField: (index: number, field: ProcField, raw: string) => void;
+  onImportProcesses?: (processes: Process[]) => void;
 }
 
 export function ProcessTable({
@@ -22,7 +24,25 @@ export function ProcessTable({
   onAdd,
   onRemove,
   onCommitField,
+  onImportProcesses,
 }: ProcessTableProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  async function handleFile(e: ChangeEvent<HTMLInputElement>): Promise<void> {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !onImportProcesses) return;
+    const { readProcessCsvFile } = await import("../lib/csvImport.ts");
+    const result = await readProcessCsvFile(file);
+    if (!result.ok) {
+      setImportError(result.errors.join(" · "));
+      return;
+    }
+    setImportError(null);
+    onImportProcesses(result.processes);
+  }
+
   return (
     <div className="sim-proc-panel">
       <div className="sim-toolbar">
@@ -52,8 +72,47 @@ export function ProcessTable({
         >
           −
         </button>
+        {onImportProcesses ? (
+          <>
+            <button
+              type="button"
+              className="sim-btn-upload"
+              title="Upload CSV: Process, Burst, Arrival[, Priority]"
+              aria-label="Upload process file"
+              onClick={(e) => {
+                e.stopPropagation();
+                fileRef.current?.click();
+              }}
+            >
+              Upload
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".csv,.txt,text/csv,text/plain"
+              hidden
+              onChange={handleFile}
+            />
+          </>
+        ) : null}
         <span className="sim-proc-count">{countLabel}</span>
       </div>
+      {importError ? (
+        <div className="sim-import-error" role="alert">
+          <span>{importError}</span>
+          <button
+            type="button"
+            className="sim-import-error-dismiss"
+            aria-label="Dismiss"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImportError(null);
+            }}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
       <div className="sim-proc-table-wrap">
         <table className="sim-proc-table">
           <thead>
@@ -70,13 +129,13 @@ export function ProcessTable({
           </thead>
           <tbody>
             {processes.map((p, idx) => (
-              <tr key={p.id}>
+              <tr key={`${p.id}-${idx}`}>
                 <td>
                   <input
                     className="sim-f-id"
                     type="text"
                     value={p.id}
-                    maxLength={6}
+                    maxLength={8}
                     readOnly
                     tabIndex={-1}
                   />
@@ -120,11 +179,11 @@ export function ProcessTable({
                       className="sim-f-pri"
                       type="number"
                       min={1}
-                      max={99}
+                      max={999}
                       step={1}
                       defaultValue={p.pri}
                       key={`pri-${p.id}-${p.pri}`}
-                      title="Used by Priority only"
+                      title="Used by Priority only · unique, ≥ 1"
                       onClick={(e) => e.stopPropagation()}
                       onBlur={(e) => {
                         e.stopPropagation();
@@ -138,6 +197,11 @@ export function ProcessTable({
           </tbody>
         </table>
       </div>
+      {onImportProcesses ? (
+        <p className="sim-upload-hint">
+          Upload CSV: Process, Burst, Arrival[, Priority] — commas, no header
+        </p>
+      ) : null}
     </div>
   );
 }
