@@ -389,9 +389,61 @@
     .sim3-meta strong { color: var(--cyan); }
     .sim-cpu-wrap { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; min-height: 0; }
     .sim-cpu-layout {
-      flex: 1; display: grid; grid-template-columns: 21.5rem minmax(0, 1fr);
-      gap: 0.55rem; min-height: 0;
+      flex: 1 1 auto; display: grid; grid-template-columns: 21.5rem minmax(0, 1fr);
+      gap: 0.55rem; min-height: 12rem; max-height: min(48vh, 28rem);
     }
+    .sim-log-panel {
+      display: flex; flex-direction: column; gap: 0.35rem;
+      min-height: 0; overflow: hidden;
+    }
+    .sim-log-panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.5rem; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .sim-log-panel-head h3 {
+      margin: 0; font-size: 0.88rem; font-weight: 650; color: var(--ink);
+    }
+    .sim-log-panel-actions {
+      display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;
+    }
+    .sim-log-panel-actions button,
+    .sim-btn-start {
+      font: inherit; font-size: 0.78rem; color: var(--ink); background: #1e2430;
+      border: 1px solid var(--line); padding: 0.2rem 0.55rem; border-radius: 5px; cursor: pointer;
+    }
+    .sim-log-panel-actions button:hover,
+    .sim-btn-start:hover { border-color: var(--cyan); }
+    .sim-log-panel-actions button:disabled {
+      opacity: 0.4; cursor: not-allowed;
+    }
+    .sim-btn-start {
+      background: var(--cyan); border-color: var(--cyan); color: #0e1116; font-weight: 700;
+    }
+    .sim-btn-start:hover { background: #52d4d4; border-color: #52d4d4; }
+    .sim-btn-start:disabled { opacity: 0.45; cursor: not-allowed; }
+    .sim-log-algo {
+      font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.25rem;
+    }
+    .sim-log-algo select {
+      font: inherit; font-size: 0.78rem; color: var(--ink); background: #1e2430;
+      border: 1px solid var(--line); padding: 0.2rem 0.45rem; border-radius: 5px;
+    }
+    .sim-log-panel .log-view {
+      flex: 1; overflow: auto; min-height: 0;
+      font-size: 0.78rem; line-height: 1.45;
+    }
+    .sim-step-detail {
+      flex: 0 0 auto;
+      padding: 0.75rem 0.9rem;
+    }
+    .sim-step-detail-idle {
+      color: var(--muted); font-size: 0.82rem; line-height: 1.45;
+    }
+    .sim-step-detail-idle p { margin: 0; }
+    .sim-step-detail-idle strong { color: var(--cyan); }
+    .sim-step-detail .log-tip-legend { margin-bottom: 0.55rem; }
+    .sim-step-detail .log-tip-boxes { margin-bottom: 0.45rem; }
+    .sim-step-detail .log-tip-box { min-height: 5.2rem; }
     .sim-proc-panel {
       display: flex; flex-direction: column; gap: 0.3rem;
       background: rgba(30, 36, 48, 0.6); border: 1px solid var(--line);
@@ -452,47 +504,6 @@
       opacity: 0.95;
       filter: invert(0.78) sepia(0.45) saturate(3) hue-rotate(130deg) brightness(1.05);
     }
-    .sim-flip {
-      min-height: 0; flex: 1; perspective: 1400px;
-      display: flex; flex-direction: column;
-    }
-    .sim-flip-inner {
-      position: relative; flex: 1; min-height: 0;
-      transform-style: preserve-3d;
-      transition: transform 0.55s cubic-bezier(0.4, 0.05, 0.2, 1);
-    }
-    .sim-flip.flipped .sim-flip-inner { transform: rotateY(180deg); }
-    .sim-flip-face {
-      position: absolute; inset: 0;
-      backface-visibility: hidden; -webkit-backface-visibility: hidden;
-      display: flex; flex-direction: column; min-height: 0; overflow: hidden;
-    }
-    .sim-flip-front { transform: rotateY(0deg); }
-    .sim-flip-back { transform: rotateY(180deg); }
-    .sim-flip-back-head {
-      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-      flex-shrink: 0; padding-bottom: 0.35rem; margin-bottom: 0.15rem;
-      border-bottom: 1px solid var(--line);
-    }
-    .sim-flip-back-head h3 {
-      font-size: 0.88rem; color: var(--cyan); font-weight: 700; margin: 0;
-    }
-    .sim-flip-back-actions { display: flex; gap: 0.35rem; align-items: center; }
-    .sim-flip-back-actions button,
-    .btn-flip-logs {
-      font: inherit; font-size: 0.72rem; font-weight: 650;
-      color: var(--orange); background: rgba(224, 138, 60, 0.1);
-      border: 1px solid rgba(224, 138, 60, 0.5);
-      padding: 0.18rem 0.55rem; border-radius: 5px; cursor: pointer;
-    }
-    .sim-flip-back-actions button:hover,
-    .btn-flip-logs:hover { border-color: var(--orange); color: #ffc078; }
-    .sim-toolbar .btn-flip-logs { margin-left: auto; }
-    .sim-flip-back .log-view {
-      flex: 1; min-height: 0; overflow: auto;
-      padding: 0.35rem 0.15rem 0.5rem;
-    }
-    .sim-cpu-sim { min-height: 0; overflow: hidden; }
     .sim-calc-panel {
       flex-shrink: 0; background: rgba(30, 36, 48, 0.75); border: 1px solid var(--line);
       border-radius: 8px; padding: 0.4rem 0.55rem;
@@ -650,25 +661,18 @@
   display: block;
   width: 100%;
   box-sizing: border-box;
-  cursor: help;
+  cursor: default;
   border-radius: 3px;
   padding: 0.05rem 0.2rem;
   margin: 0;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 .log-evt:hover {
-  background: rgba(62, 200, 200, 0.08);
+  background: rgba(62, 200, 200, 0.06);
 }
-.log-state-tip {
-  position: fixed;
-  z-index: 80;
-  min-width: 420px;
-  max-width: min(560px, calc(100vw - 24px));
-  padding: 1rem 1.1rem;
-  background: #151a24;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  pointer-events: none;
+.log-evt.is-active {
+  background: rgba(62, 200, 200, 0.16);
+  box-shadow: inset 2px 0 0 var(--cyan);
 }
 .log-tip-legend {
   display: flex;
@@ -818,7 +822,6 @@
 .stage,
 .sim-proc-table-wrap,
 .log-view,
-.sim-flip-back,
 .sim-panel {
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #151a24;
@@ -826,7 +829,6 @@
 .stage::-webkit-scrollbar,
 .sim-proc-table-wrap::-webkit-scrollbar,
 .log-view::-webkit-scrollbar,
-.sim-flip-back::-webkit-scrollbar,
 .sim-panel::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -834,7 +836,6 @@
 .stage::-webkit-scrollbar-track,
 .sim-proc-table-wrap::-webkit-scrollbar-track,
 .log-view::-webkit-scrollbar-track,
-.sim-flip-back::-webkit-scrollbar-track,
 .sim-panel::-webkit-scrollbar-track {
   background: #151a24;
   border-radius: 8px;
@@ -842,7 +843,6 @@
 .stage::-webkit-scrollbar-thumb,
 .sim-proc-table-wrap::-webkit-scrollbar-thumb,
 .log-view::-webkit-scrollbar-thumb,
-.sim-flip-back::-webkit-scrollbar-thumb,
 .sim-panel::-webkit-scrollbar-thumb {
   background: #4a5568;
   border-radius: 8px;
@@ -851,7 +851,6 @@
 .stage::-webkit-scrollbar-thumb:hover,
 .sim-proc-table-wrap::-webkit-scrollbar-thumb:hover,
 .log-view::-webkit-scrollbar-thumb:hover,
-.sim-flip-back::-webkit-scrollbar-thumb:hover,
 .sim-panel::-webkit-scrollbar-thumb:hover {
   background: var(--cyan);
 }

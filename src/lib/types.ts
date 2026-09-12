@@ -43,10 +43,18 @@ export interface ScheduleResult {
   avgTat: number;
 }
 
+export interface LogWalkEvent {
+  index: number;
+  time: number;
+  evt: LogEvent;
+  snap: LogSnap;
+}
+
 export interface EventLogResult {
   html: string;
   text: string;
   title?: string;
+  events: LogWalkEvent[];
 }
 
 export interface LogSnapProc {
@@ -95,6 +103,3 @@ export interface CompareCard {
 
 export type ProcField = "arr" | "burst" | "pri";
 
-export interface FlipOpts {
-  silent?: boolean;
-}

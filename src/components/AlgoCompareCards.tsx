@@ -29,16 +29,12 @@ const COLS: ColDef[] = [
 interface AlgoCompareCardsProps {
   compare: CompareCard[];
   algo: NonPreemptiveAlgo;
-  arrivalStep: number;
-  fullOrder: string;
   onSelect: (key: NonPreemptiveAlgo) => void;
 }
 
 export function AlgoCompareCards({
   compare,
   algo,
-  arrivalStep,
-  fullOrder,
   onSelect,
 }: AlgoCompareCardsProps) {
   return (
@@ -47,13 +43,7 @@ export function AlgoCompareCards({
         {COLS.map((col) => {
           const data = compare.find((c) => c.key === col.key);
           const active = algo === col.key;
-          let tag = "";
-          if (active) {
-            tag =
-              arrivalStep > 0
-                ? `↳ matches sim · full order: ${fullOrder}`
-                : "↳ selected in simulator";
-          }
+          const tag = active ? "↳ selected · drives event log" : "";
           const wt = data?.avgWt == null ? "—" : data.avgWt.toFixed(2);
           const tat = data?.avgTat == null ? "—" : data.avgTat.toFixed(2);
           return (

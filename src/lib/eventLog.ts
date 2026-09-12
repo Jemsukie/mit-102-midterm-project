@@ -6,6 +6,7 @@ import type {
   LogEvent,
   LogSnap,
   LogSnapProc,
+  LogWalkEvent,
   NonPreemptiveAlgo,
   Process,
 } from "./types.ts";
@@ -178,9 +179,9 @@ function renderLogEvent(evt: LogEvent): string {
   }
 }
 
-function wrapLogEvent(evt: LogEvent): string {
+function wrapLogEvent(evt: LogEvent, index: number): string {
   const snap = snapAttr(evt.snap || { queue: [], cpu: null, done: [] });
-  return `<div class="log-evt" data-snap="${snap}">${renderLogEvent(evt)}</div>`;
+  return `<div class="log-evt" data-index="${index}" data-snap="${snap}">${renderLogEvent(evt)}</div>`;
 }
 
 function eventPlainText(evt: LogEvent): string {
@@ -213,6 +214,7 @@ export function formatEventLog(
   metrics: EventLogMetrics[],
 ): EventLogResult {
   const blocks: string[] = [];
+  const events: LogWalkEvent[] = [];
   blocks.push(`<div class="log-head">${escapeHtml(title)} Scheduling Simulator</div>`);
 
   const eventTimes = Object.keys(logByTime).map(Number);
@@ -246,12 +248,19 @@ export function formatEventLog(
     }
   }
 
-  function bodyFor(evts: LogEvent[]): string {
+  function takeEvt(t: number, evt: LogEvent): string {
+    const index = events.length;
+    const snap = evt.snap || { time: t, queue: [], cpu: null, done: [], transit: null };
+    events.push({ index, time: t, evt, snap });
+    return wrapLogEvent(evt, index);
+  }
+
+  function bodyFor(t: number, evts: LogEvent[]): string {
     if (!evts.length) return "";
-    const first = wrapLogEvent(evts[0]);
+    const first = takeEvt(t, evts[0]);
     const rest = evts
       .slice(1)
-      .map((evt) => `<div class="log-cont">${wrapLogEvent(evt)}</div>`)
+      .map((evt) => `<div class="log-cont">${takeEvt(t, evt)}</div>`)
       .join("");
     return `<div class="log-first">${first}</div>${rest}`;
   }
@@ -272,7 +281,7 @@ export function formatEventLog(
   }
 
   segments.forEach((seg, i) => {
-    if (seg.kind === "busy") pushRow(seg.t, bodyFor(seg.evts));
+    if (seg.kind === "busy") pushRow(seg.t, bodyFor(seg.t, seg.evts));
     else pushEmptyGap(seg.from, seg.to);
     if (i < segments.length - 1) {
       const next = segments[i + 1];
@@ -328,7 +337,7 @@ export function formatEventLog(
     plain.push("Average turnaround time:\t" + avgTat.toFixed(2));
   }
 
-  return { html: blocks.join(""), text: plain.join("\n") };
+  return { html: blocks.join(""), text: plain.join("\n"), events };
 }
 
 function sortReadyForLog(queue: Process[], algo: NonPreemptiveAlgo): void {

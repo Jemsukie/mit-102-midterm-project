@@ -1,13 +1,5 @@
 import type { NonPreemptiveAlgo, Process } from "./types.ts";
 
-export const SIM_ICON = {
-  prev: "⏮",
-  step: "⏭",
-  play: "▶",
-  pause: "⏸",
-  reset: "↺",
-} as const;
-
 export const DEFAULT_PROCS: Process[] = [
   { id: "A", arr: 0, burst: 8, pri: 2 },
   { id: "B", arr: 1, burst: 4, pri: 3 },
