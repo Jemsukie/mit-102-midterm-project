@@ -40,9 +40,8 @@ jobs:
           # Project site: https://<owner>.github.io/<repo>/
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
+      # configure-pages is optional for Vite and fails hard when Pages
+      # has not been enabled yet — skip it and upload dist directly.
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
