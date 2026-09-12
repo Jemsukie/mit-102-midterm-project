@@ -108,7 +108,6 @@ export function parseProcessCsv(text: string): CsvImportResult {
 
   const processes: Process[] = [];
   const nameSeen = new Map<string, number>();
-  const arrSeen = new Map<number, number>();
   const priSeen = new Map<number, number>();
 
   rows.forEach((cells, idx) => {
@@ -148,13 +147,6 @@ export function parseProcessCsv(text: string): CsvImportResult {
     if (arrRes.value < 0) {
       errors.push(`Row ${row}: Arrival cannot be negative`);
       return;
-    }
-    if (arrSeen.has(arrRes.value)) {
-      errors.push(
-        `Row ${row}: duplicate arrival time ${arrRes.value} (also on row ${arrSeen.get(arrRes.value)})`,
-      );
-    } else {
-      arrSeen.set(arrRes.value, row);
     }
 
     let pri = idx + 1;

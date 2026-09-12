@@ -2,7 +2,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { MAX_ROWS } from "../lib/constants.ts";
 import { buildRoundRobinLog } from "../lib/eventLog.ts";
 import {
-  cascadeUniqueArrival,
   cascadeUniquePriority,
   createDefaultProcesses,
   nextFreePriority,
@@ -70,8 +69,7 @@ export function useRoundRobinSim() {
       let next: Process[];
       if (field === "arr") {
         const cleaned = sanitizeArrival(raw);
-        const withVal = prev.map((p, i) => (i === index ? { ...p, arr: cleaned } : p));
-        next = cascadeUniqueArrival(withVal, index);
+        next = prev.map((p, i) => (i === index ? { ...p, arr: cleaned } : p));
       } else if (field === "burst") {
         const n = sanitizeBurst(raw);
         next = prev.map((p, i) => (i === index ? { ...p, burst: n } : p));

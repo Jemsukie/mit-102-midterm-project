@@ -69,11 +69,6 @@ function cascadeUniqueNumber(
   return procs;
 }
 
-/** Keep arrivals unique: edited row keeps its value; cascade others to next free times. */
-export function cascadeUniqueArrival(processes: Process[], editedIndex: number): Process[] {
-  return cascadeUniqueNumber(processes, editedIndex, "arr", 0);
-}
-
 /** Keep priorities unique and ≥ 1. */
 export function cascadeUniquePriority(processes: Process[], editedIndex: number): Process[] {
   return cascadeUniqueNumber(processes, editedIndex, "pri", 1);
