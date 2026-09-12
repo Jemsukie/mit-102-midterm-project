@@ -406,21 +406,11 @@
     .sim-log-panel-actions {
       display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;
     }
-    .sim-log-panel-actions button,
-    .sim-btn-start {
+    .sim-log-panel-actions button {
       font: inherit; font-size: 0.78rem; color: var(--ink); background: #1e2430;
       border: 1px solid var(--line); padding: 0.2rem 0.55rem; border-radius: 5px; cursor: pointer;
     }
-    .sim-log-panel-actions button:hover,
-    .sim-btn-start:hover { border-color: var(--cyan); }
-    .sim-log-panel-actions button:disabled {
-      opacity: 0.4; cursor: not-allowed;
-    }
-    .sim-btn-start {
-      background: var(--cyan); border-color: var(--cyan); color: #0e1116; font-weight: 700;
-    }
-    .sim-btn-start:hover { background: #52d4d4; border-color: #52d4d4; }
-    .sim-btn-start:disabled { opacity: 0.45; cursor: not-allowed; }
+    .sim-log-panel-actions button:hover { border-color: var(--cyan); }
     .sim-log-algo {
       font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.25rem;
     }
@@ -432,18 +422,44 @@
       flex: 1; overflow: auto; min-height: 0;
       font-size: 0.78rem; line-height: 1.45;
     }
+    .sim-step-detail-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.55rem;
+    }
+    .sim-step-detail-label {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); font-weight: 650;
+    }
+    .sim-step-controls {
+      display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .sim-btn-amber {
+      font: inherit; font-size: 0.78rem; font-weight: 700;
+      color: #1a1208;
+      background: var(--orange);
+      border: 1px solid #f0a45a;
+      padding: 0.22rem 0.6rem; border-radius: 5px; cursor: pointer;
+      line-height: 1.1;
+    }
+    .sim-btn-amber.sim-btn-icon {
+      min-width: 2rem; padding: 0.22rem 0.45rem;
+      font-size: 0.95rem; font-weight: 700;
+    }
+    .sim-btn-amber:hover {
+      background: #f0a45a;
+      border-color: #ffc078;
+    }
+    .sim-btn-amber:disabled {
+      opacity: 0.4; cursor: not-allowed;
+    }
     .sim-step-detail {
       flex: 0 0 auto;
       padding: 0.75rem 0.9rem;
     }
-    .sim-step-detail-idle {
-      color: var(--muted); font-size: 0.82rem; line-height: 1.45;
-    }
-    .sim-step-detail-idle p { margin: 0; }
-    .sim-step-detail-idle strong { color: var(--cyan); }
-    .sim-step-detail .log-tip-legend { margin-bottom: 0.55rem; }
-    .sim-step-detail .log-tip-boxes { margin-bottom: 0.45rem; }
-    .sim-step-detail .log-tip-box { min-height: 5.2rem; }
+    .sim-step-detail-body .log-tip-legend { margin-bottom: 0.55rem; }
+    .sim-step-detail-body .log-tip-boxes { margin-bottom: 0.45rem; }
+    .sim-step-detail-body .log-tip-box { min-height: 5.2rem; }
     .sim-proc-panel {
       display: flex; flex-direction: column; gap: 0.3rem;
       background: rgba(30, 36, 48, 0.6); border: 1px solid var(--line);
@@ -505,7 +521,9 @@
       filter: invert(0.78) sepia(0.45) saturate(3) hue-rotate(130deg) brightness(1.05);
     }
     .sim-calc-panel {
-      flex-shrink: 0; background: rgba(30, 36, 48, 0.75); border: 1px solid var(--line);
+      flex-shrink: 0;
+      margin-top: auto;
+      background: rgba(30, 36, 48, 0.75); border: 1px solid var(--line);
       border-radius: 8px; padding: 0.4rem 0.55rem;
     }
     .sim-calc-head { font-size: 0.72rem; color: var(--orange); font-weight: 650; margin-bottom: 0.25rem; }

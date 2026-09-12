@@ -28,14 +28,7 @@ export default function RoundRobinPage() {
             html={sim.eventLog?.html || ""}
             plainText={sim.eventLog?.text || ""}
             started={walk.started}
-            canStart={walk.canStart}
-            canPrev={walk.canPrev}
-            canNext={walk.canNext}
             activeIndex={walk.started ? walk.index : null}
-            onStart={walk.start}
-            onPrev={walk.prev}
-            onNext={walk.next}
-            onReset={walk.reset}
             headerExtra={
               <label className="sim-log-algo">
                 Quantum
@@ -58,7 +51,17 @@ export default function RoundRobinPage() {
             }
           />
         </div>
-        <StepDetailPanel snap={walk.activeSnap} started={walk.started} />
+        <StepDetailPanel
+          snap={walk.activeSnap}
+          started={walk.started}
+          canStart={walk.canStart}
+          canPrev={walk.canPrev}
+          canNext={walk.canNext}
+          onStart={walk.start}
+          onPrev={walk.prev}
+          onNext={walk.next}
+          onReset={walk.reset}
+        />
         <div className="sim-calc-panel">
           <div className="sim-calc-head">
             Calculations · Round Robin (q = <span>{sim.quantum}</span>)

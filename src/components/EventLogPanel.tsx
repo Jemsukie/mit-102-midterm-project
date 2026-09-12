@@ -6,14 +6,7 @@ interface EventLogPanelProps {
   html: string;
   plainText: string;
   started: boolean;
-  canStart: boolean;
-  canPrev: boolean;
-  canNext: boolean;
   activeIndex: number | null;
-  onStart: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-  onReset: () => void;
   headerExtra?: ReactNode;
 }
 
@@ -22,14 +15,7 @@ export function EventLogPanel({
   html,
   plainText,
   started,
-  canStart,
-  canPrev,
-  canNext,
   activeIndex,
-  onStart,
-  onPrev,
-  onNext,
-  onReset,
   headerExtra,
 }: EventLogPanelProps) {
   const viewRef = useRef<HTMLDivElement>(null);
@@ -69,60 +55,6 @@ export function EventLogPanel({
         <h3>{title}</h3>
         <div className="sim-log-panel-actions">
           {headerExtra}
-          {!started ? (
-            <button
-              type="button"
-              className="sim-btn-start"
-              disabled={!canStart}
-              onClick={(e) => {
-                e.stopPropagation();
-                onStart();
-              }}
-            >
-              Start
-            </button>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="sim-btn-icon"
-                title="Prev"
-                aria-label="Prev"
-                disabled={!canPrev}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPrev();
-                }}
-              >
-                ⏮
-              </button>
-              <button
-                type="button"
-                className="sim-btn-icon"
-                title="Next"
-                aria-label="Next"
-                disabled={!canNext}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNext();
-                }}
-              >
-                ⏭
-              </button>
-              <button
-                type="button"
-                className="sim-btn-icon"
-                title="Reset"
-                aria-label="Reset"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onReset();
-                }}
-              >
-                ↺
-              </button>
-            </>
-          )}
           <button type="button" onClick={handleCopy}>
             {copyLabel}
           </button>
