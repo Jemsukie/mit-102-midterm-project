@@ -23,4 +23,11 @@ Uses Yarn 4 (`.yarn/releases/`). `node_modules/` is gitignored.
 | `/` | Non-preemptive (FCFS · SJF · Priority) |
 | `/round-robin` | Round Robin |
 
+## GitHub Pages
+
+Pushes to `next` or `main` run [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml), which builds with Yarn and deploys `dist/` via GitHub Actions.
+
+1. Repo **Settings → Pages → Build and deployment → Source**: **GitHub Actions**
+2. Site URL: `https://jemsukie.github.io/mit-102-midterm-project/`
+
 The original vanilla HTML/JS lab remains in `../scheduler/`.
