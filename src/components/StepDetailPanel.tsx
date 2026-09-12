@@ -56,6 +56,18 @@ export function StepDetailPanel({
               <button
                 type="button"
                 className="sim-btn-amber sim-btn-icon"
+                title="Reset"
+                aria-label="Reset"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReset();
+                }}
+              >
+                ↺
+              </button>
+              <button
+                type="button"
+                className="sim-btn-amber sim-btn-icon"
                 title="Prev"
                 aria-label="Prev"
                 disabled={!canPrev}
@@ -78,18 +90,6 @@ export function StepDetailPanel({
                 }}
               >
                 ⏭
-              </button>
-              <button
-                type="button"
-                className="sim-btn-amber sim-btn-icon"
-                title="Reset"
-                aria-label="Reset"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onReset();
-                }}
-              >
-                ↺
               </button>
             </>
           )}
